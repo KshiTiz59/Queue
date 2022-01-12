@@ -534,7 +534,11 @@ int main()
     return 0;
 }
   
-  //Q6:
+ 
+
+
+
+//Q6:
     // Queue implementation using stack
 #include<bits/stdc++.h>
 using namespace std;
@@ -587,4 +591,197 @@ int main()
     cout<<"Contents of the Queue are:"<<endl;
     q.Display();
 }
+
+
+
+//Q9:
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node
+{
+	int data;
+	struct Node* link;
+};
+struct Node* top;
+
+void push(int data)
+{
+	struct Node* temp = new Node();
+	if (!temp)
+	{
+		cout << "\nHeap Overflow";
+		exit(1);
+	}
+
+	temp->data = data;
+	temp->link = top;
+	top = temp;
+}
+
+int isEmpty()
+{
+	return top == NULL;
+}
+
+void pop()
+{
+	struct Node* temp;
+
+	if (top == NULL)
+	{
+		cout << "\nStack Underflow" << endl;
+		exit(1);
+	}
+	else
+	{
+		temp = top;
+		top = top->link;
+		temp->link = NULL;
+		free(temp);
+	}
+}
+
+void display()
+{
+	struct Node* temp;
+
+	if (top == NULL)
+	{
+		cout << "\nStack Underflow";
+		exit(1);
+	}
+	else
+	{
+		temp = top;
+		while (temp != NULL)
+		{
+			cout << temp->data << "-> ";
+			temp = temp->link;
+		}
+	}
+}
+
+int main()
+{
+	
+	
+	push(10);
+	push(20);
+	push(30);
+	push(40);
+	push(50);
+cout<<"Elements in stack are :"<<endl;
+	display();
+
+	pop();
+	pop();
+cout<<"\n After popping stack is :"<<endl;
+	display();
+
+	return 0;
+}
+
+
+
+
+//Q10:
+
+#include<stdio.h>   
+#include<stdlib.h>  
+struct node   
+{  
+    int data;   
+    struct node *next;  
+};  
+struct node *front;  
+struct node *rear;   
+
+void insert()  
+{  
+    struct node *ptr;  
+    int item;   
+      
+    ptr = (struct node *) malloc (sizeof(struct node));  
+    if(ptr == NULL)  
+    {  
+        printf("\nOVERFLOW\n");  
+        return;  
+    }  
+    else  
+    {   
+  printf("Enter value :\n");  
+  scanf("%d",&item);  
+  ptr -> data = item;  
+  if(front == NULL)  
+  {  
+      front = ptr;  
+      rear = ptr;   
+      front -> next = NULL;  
+      rear -> next = NULL;  
+  }  
+  else   
+  {  
+      rear -> next = ptr;  
+      rear = ptr;  
+      rear->next = NULL;  
+        }  
+    }  
+}   
+
+void delete ()  
+{  
+    struct node *ptr;  
+    if(front == NULL)  
+    {  
+        printf("\nUNDERFLOW\n");  
+        return;  
+    }  
+    else   
+    {  
+        ptr = front;  
+        front = front -> next;  
+        free(ptr);  
+    }  
+}  
+
+void display()  
+{  
+      struct node *ptr;  
+  ptr = front;      
+  if(front == NULL)  
+  {  
+          printf("\nEmpty queue\n");  
+  }  
+  else  
+  {   printf("\nprinting values .....\n");  
+      while(ptr != NULL)   
+      {  
+              printf("\n%d\n",ptr -> data);  
+          ptr = ptr -> next;  
+      }  
+    }  
+}  
+
+void main ()  
+{  
+  insert ();
+  insert ();
+  insert ();
+  insert ();
+  insert ();
+  printf("Queue is :\n");
+  display();
+  delete ();
+  delete ();
+  printf("Queue after deletion is :\n");
+  display();
+
+}  
+  
+
+
+
 
