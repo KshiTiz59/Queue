@@ -592,7 +592,346 @@ int main()
     q.Display();
 }
 
+//Q7
 
+#include <stdio.h>
+#include <stdlib.h>
+//min represents the lower bound for a stack
+//max represents the upper bound for a stack
+int s[50],top[50],min[50],max[50];
+//ns is stack number
+//size is size of the stack
+int ns,size;
+//function to initialize starting values of top,min,max and stack
+void init(void)
+{ 
+ int i;
+ for(i=0;i<50;++i)
+ { 
+ s[i]=min[i]=max[i] = 0;
+ top[i]=-1;
+ }
+}
+
+void createstack()
+{ 
+ int i ;
+ //min and top of 0th stack will be -1
+ //and it’s max will be at index one lesser than it’s size
+min[0]= -1;
+ max[0] = size -1;
+ top[0]=-1;
+ 
+ //min and top of 1,2,3,….th stacks 
+ for(i=1;i<ns;++i)
+ {
+ min[i]= min[i-1] + size;
+ top[i] = min [i];
+}//end for
+ 
+ //max of 1,2,3,….th stacks will me min of 2,3,4,….th stack
+ for(i=1;i<ns;++i)
+ {
+ max[i]= min[i+1];
+ 
+ }//end for
+ 
+}//end function
+//function to push element to stack
+//parameters passed will be the item user wants to push and the stack no. to //push
+void push(int ele,int k)
+{
+ //check for stack overflow
+ if(top[k-1]==max[k-1])
+ {
+ printf(“Stack no %d is full i.e overflow\n”,k);
+ return;
+ }//end if
+ 
+ ++top[k-1];
+ s[top[k-1]] = ele;
+ 
+}//end function push
+//function to pop an element form stack
+//parameters passed is the stack no. from which we want to pop an element 
+void pop(int k)
+{ 
+ //check for underflow 
+ if(top[k-1]==min[k-1])
+ { 
+ printf(“\nStack no %d is empty i.e underflow\n”,k);
+ return;
+}//end if
+ 
+ //else delete the item
+ printf(“%d from stack %d is deleted:\n”,s[top[k-1]],k);
+- -top[k-1];
+ 
+}//end function pop
+ 
+ 
+ 
+//function to display any stack
+//parameter passed is the stack number to display 
+void display(int k)
+{ 
+ //first check for stack empty condition
+ //variable j is used to iterate through the list
+ int j;
+ if(top[k-1]==min[k-1])
+ { 
+ printf(“\nStack no %d is empty\n”,k);
+ return;
+ }//end if
+ 
+ //else display the list 
+ printf(“\nStack %d →> “,k);
+ 
+ for(j=min[k-1]+1;j<=top[k-1];++j)
+ { 
+ printf(“%d”,s[j] );
+ }//end for 
+ 
+} //end function display
+//main function
+int main() {
+ //variable choice,stack number and item to push is initialized
+ int ele,ch,skn;
+ init();//function call
+ 
+ //input the number of stacks
+ printf(“\nEnter the number of Stacks\n”);
+ scanf(“%d”,&ns);
+ 
+ //size of each stack
+ //size = size of array/number of stacks
+ size = 50/ns;
+ 
+ createstack();//function call
+ 
+ printf(“\n1.Push\n2.Pop\n3.Display\n4.Exit\n”);
+ 
+ do{
+ //ask for users choice
+ printf(“\nEnter your choice : \t”);
+ scanf(“%d”,&ch);
+ 
+ switch(ch)
+ { 
+ case 1: printf(“\nEnter the stack no : \t”);
+ scanf(“%d”,&skn);
+ printf(“\nEnter the element : \t”);
+ scanf(“%d”,&ele);
+ push(ele,skn);
+ break;
+ 
+ 
+ case 2 : printf(“\nEnter the stack no to pop : \t”);
+ scanf(“%d”,&skn);
+ pop(skn);
+ break;
+ 
+ 
+ case 3: printf(“\nEnter the stack no to display : \t”);
+ scanf(“%d”,&skn);
+ display(skn);
+ break;
+ 
+ 
+ case 4 : printf(“\nProgram Terminating”);
+ break;
+ 
+ 
+ default : printf(“\nInvalid Option\n”);
+ }//end switch
+ 
+ }//end do-while loop
+ while(ch!=4);
+ 
+ return 0;
+ 
+}
+
+//Q8:
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+// Structure of queue
+struct NQueue
+{
+	int element;
+	int part;
+	int *data;
+	int *front;
+	int *tail;
+	int *next;
+	int counter;
+};
+struct NQueue *makeQueue(int element, int n)
+{
+	if (n <= 0 || element == 0)
+	{
+		return NULL;
+	}
+	// Create dynamic NQueue
+	struct NQueue *q = (struct NQueue *) malloc(sizeof(struct NQueue));
+	if (q == NULL)
+	{
+		printf("\n Memory Overflow, when creating a new Queue\n");
+	}
+	else
+	{
+		// Create memory of queue elements
+		q->data = (int *) malloc(element *sizeof(int));
+		q->next = (int *) malloc(element *sizeof(int));
+		q->front = (int *) malloc(n *sizeof(int));
+		q->tail = (int *) malloc(n *sizeof(int));
+		q->counter = 0;
+		q->element = element;
+		q->part = n;
+		int i = 0;
+		// Set the initial value of front and tail of queue
+		for (i = 0; i < n; ++i)
+		{
+			q->front[i] = -1;
+			q->tail[i] = -1;
+		}
+		// Set next and data value
+		for (i = 0; i < element - 1; ++i)
+		{
+			q->data[i] = 0;
+			q->next[i] = i + 1;
+		}
+		q->next[element - 1] = -1;
+		q->data[element - 1] = 0;
+	}
+	return q;
+}
+// Determine that given queue is empty or not
+int isEmpty(struct NQueue *q, int selection)
+{
+	return q->front[selection] == -1;
+}
+// Determine that given queue is full or not
+int isFull(struct NQueue *q)
+{
+	if (q->counter == -1)
+	{
+		return 1;
+	}
+	return 0;
+}
+// Handles the request of adding a new element into select queue
+void enqueue(struct NQueue *q, int selection, int data)
+{
+	if (selection < 0 || selection >= q->part)
+	{
+		// When given queue is out of range
+		return;
+	}
+	if (isFull(q) == 1)
+	{
+		printf("\n Queue is Full \n");
+	}
+	else
+	{
+		int location = q->next[q->counter];
+		if (isEmpty(q, selection) == 1)
+		{
+			// First element of queue
+			q->front[selection] = q->counter;
+			q->tail[selection] = q->counter;
+		}
+		else
+		{
+			q->next[q->tail[selection]] = q->counter;
+			q->tail[selection] = q->counter;
+		}
+		q->data[q->counter] = data;
+		q->next[q->counter] = -1;
+		q->counter = location;
+	}
+}
+// Handles the request of remove selected queue element
+int dequeue(struct NQueue *q, int selection)
+{
+	if (selection < 0 || selection >= q->part)
+	{
+		// When given queue is out of range
+		return -1;
+	}
+	if (isEmpty(q, selection) == 1)
+	{
+		printf("\n Queue is Empty \n");
+		return -1;
+	}
+	else
+	{
+		// Get the removed element location
+		int location = q->front[selection];
+		// Get the removed element
+		int item = q->data[q->front[selection]];
+		q->data[q->front[selection]] = 0; // reset data
+		// Front is move to next element of queue
+		q->front[selection] = q->next[location];
+		// Set empty location in remove element
+		q->next[location] = q->counter;
+		// Set counter to current empty location
+		q->counter = location;
+		return item;
+	}
+}
+// Display queue elements
+void printQueue(struct NQueue *q)
+{
+	int location = 0;
+	for (int i = 0; i < q->part; ++i)
+	{
+		printf("\n Queue %d : ", i);
+		// Select Queue
+		location = q->front[i];
+		while (location != -1)
+		{
+			printf(" %d", q->data[location]);
+			location = q->next[location];
+		}
+	}
+}
+int main(int argc, char
+	const *argv[])
+{
+	struct NQueue *q = makeQueue(15, 4);
+	// Add element in queue using random queue selection
+	// Put data in queue-0
+	enqueue(q, 0, 5);
+	// Put data in queue-1
+	enqueue(q, 1, 10);
+	// Put data in queue-2
+	enqueue(q, 2, 20);
+	// Put data in queue-3
+	enqueue(q, 3, 30);
+	enqueue(q, 3, 19);
+	// Put data in queue-0
+	enqueue(q, 0, 15);
+	enqueue(q, 0, 25);
+	// Put data in queue-3
+	enqueue(q, 3, 60);
+	enqueue(q, 3, 9);
+	enqueue(q, 3, 3);
+	// Put data in queue-2
+	enqueue(q, 2, 8);
+	enqueue(q, 2, 45);
+	printQueue(q);
+	// Perform remove operation
+	printf("\n Remove element of Queue %d is : %d", 0, dequeue(q, 0));
+	printf("\n Remove element of Queue %d is : %d", 0, dequeue(q, 0));
+	printf("\n Remove element of Queue %d is : %d", 3, dequeue(q, 3));
+	printf("\n Remove element of Queue %d is : %d", 1, dequeue(q, 1));
+	printQueue(q);
+	return 0;
+}
 
 //Q9:
 
